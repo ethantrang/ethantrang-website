@@ -1,0 +1,8 @@
+{
+  "sections": [
+    { "id": "work", "label": "Work", "order": 0 },
+    { "id": "writings", "label": "Writings", "order": 1 },
+    { "id": "bits", "label": "Bits", "order": 2 },
+    { "id": "products", "label": "Products", "order": 3 }
+  ]
+}
