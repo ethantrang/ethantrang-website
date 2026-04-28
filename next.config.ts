@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     localPatterns: [
       {
         pathname: '/uploads/media/**',
+        search: '',
       },
     ],
   },

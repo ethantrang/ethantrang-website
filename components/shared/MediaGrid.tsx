@@ -23,6 +23,7 @@ export function MediaGrid({ items }: MediaGridProps) {
               src={item.frontmatter.src}
               alt={item.frontmatter.description}
               fill
+              unoptimized
               className="object-cover transition-opacity group-hover:opacity-90"
               sizes="(max-width: 640px) 50vw, 33vw"
             />

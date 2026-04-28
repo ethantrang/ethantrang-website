@@ -40,6 +40,7 @@ function AdminMediaItem({ item }: AdminMediaItemProps) {
           src={item.frontmatter.src}
           alt={item.frontmatter.description}
           fill
+          unoptimized
           className="object-cover"
           sizes="(max-width: 640px) 50vw, 33vw"
         />
