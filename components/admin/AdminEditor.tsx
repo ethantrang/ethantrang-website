@@ -25,6 +25,7 @@ export function AdminEditor({ frontmatter, body }: AdminEditorProps) {
 
   const [status, setStatus] = useState<ContentStatus>(frontmatter.status);
   const [saving, setSaving] = useState(false);
+  const [slugValid, setSlugValid] = useState(() => /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(frontmatter.slug));
   const pendingFrontmatter = useRef<Partial<ContentFrontmatter>>({});
 
   const patchContent = useCallback(
@@ -69,7 +70,7 @@ export function AdminEditor({ frontmatter, body }: AdminEditorProps) {
               <SelectItem value="public" className="text-xs">Public</SelectItem>
             </SelectContent>
           </Select>
-          <Button size="sm" className="h-8 text-xs" onClick={handleSave} disabled={saving}>
+          <Button size="sm" className="h-8 text-xs" onClick={handleSave} disabled={saving || !slugValid}>
             {saving ? 'Saving…' : 'Save'}
           </Button>
         </div>
@@ -81,6 +82,7 @@ export function AdminEditor({ frontmatter, body }: AdminEditorProps) {
         onChange={(partial) => {
           pendingFrontmatter.current = { ...pendingFrontmatter.current, ...partial };
         }}
+        onValidChange={setSlugValid}
         disableSlug={slug === 'intro'}
       />
 

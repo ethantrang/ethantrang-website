@@ -5,21 +5,33 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { ContentFrontmatter } from '@/lib/types';
 
+const VALID_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+function isValidSlug(s: string): boolean {
+  return VALID_SLUG.test(s);
+}
+
 interface FrontmatterFormProps {
   frontmatter: ContentFrontmatter;
   onChange: (partial: Partial<ContentFrontmatter>) => void;
+  onValidChange?: (valid: boolean) => void;
   disableSlug?: boolean;
 }
 
-export function FrontmatterForm({ frontmatter, onChange, disableSlug = false }: FrontmatterFormProps) {
+export function FrontmatterForm({ frontmatter, onChange, onValidChange, disableSlug = false }: FrontmatterFormProps) {
   const [title, setTitle] = useState(frontmatter.title);
   const [slug, setSlug] = useState(frontmatter.slug);
+  const [slugError, setSlugError] = useState(() =>
+    isValidSlug(frontmatter.slug) ? '' : 'Slug must be lowercase letters, numbers, and hyphens only'
+  );
   const [createdAt, setCreatedAt] = useState(frontmatter.createdAt.slice(0, 10));
   const [updatedAt, setUpdatedAt] = useState(frontmatter.updatedAt.slice(0, 10));
 
   useEffect(() => {
     setTitle(frontmatter.title);
-    setSlug(frontmatter.slug);
+    const newSlug = frontmatter.slug;
+    setSlug(newSlug);
+    setSlugError(isValidSlug(newSlug) ? '' : 'Slug must be lowercase letters, numbers, and hyphens only');
     setCreatedAt(frontmatter.createdAt.slice(0, 10));
     setUpdatedAt(frontmatter.updatedAt.slice(0, 10));
   }, [frontmatter.slug, frontmatter.title, frontmatter.createdAt, frontmatter.updatedAt]);
@@ -44,12 +56,17 @@ export function FrontmatterForm({ frontmatter, onChange, disableSlug = false }: 
           id="fm-slug"
           value={slug}
           onChange={(e) => {
-            setSlug(e.target.value);
-            onChange({ slug: e.target.value });
+            const val = e.target.value;
+            setSlug(val);
+            const valid = isValidSlug(val);
+            setSlugError(valid ? '' : 'Slug must be lowercase letters, numbers, and hyphens only');
+            onValidChange?.(valid);
+            onChange({ slug: val });
           }}
           disabled={disableSlug}
-          className="h-8 text-sm font-mono disabled:opacity-40 disabled:cursor-not-allowed"
+          className={`h-8 text-sm font-mono disabled:opacity-40 disabled:cursor-not-allowed${slugError ? ' border-destructive focus-visible:ring-destructive' : ''}`}
         />
+        {slugError && <p className="text-xs text-destructive">{slugError}</p>}
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="fm-created" className="text-xs">Created</Label>
